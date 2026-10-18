@@ -1,0 +1,18 @@
+.env
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+data/*.db
+data/*.db-*
+data/qr/
+data/secret.key
+data/shots/
+data/*.log
+data/*.txt
+.DS_Store
+.idea/
+.vscode/
+# фронт лежит отдельным репо (GitHub Pages)
+frontend/

@@ -1,0 +1,27 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
+  <meta name="theme-color" content="#3d2416" />
+  <title>Акварель</title>
+  <!-- config.js задаёт адрес API. Пустой apiBase = тот же хост (локальный FastAPI). -->
+  <script src="js/config.js?v=15"></script>
+  <!-- prefetch.js сразу отправляет первый запрос к API — параллельно с загрузкой стилей и скриптов -->
+  <script src="js/prefetch.js?v=15"></script>
+  <link rel="preload" href="assets/fonts/manrope-cyrillic.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="stylesheet" href="css/app.css?v=15" />
+</head>
+<body>
+  <!-- Статичный экран загрузки: виден сразу, до загрузки скриптов -->
+  <div id="app"><div class="screen"><div class="hero"><div class="brand">Акварель</div></div>
+    <div class="sk block"></div><div class="sk block"></div><div class="sk block"></div></div></div>
+  <div id="sheet-root"></div>
+  <div id="toast-root" aria-live="polite"></div>
+  <noscript>Для работы приложения нужен JavaScript.</noscript>
+  <!-- SDK Telegram/MAX подгружает bridge.js — только нужный и параллельно с запросом к API -->
+  <script src="js/bridge.js?v=15"></script>
+  <script src="js/core.js?v=15"></script>
+  <script src="js/app.js?v=15"></script>
+</body>
+</html>
