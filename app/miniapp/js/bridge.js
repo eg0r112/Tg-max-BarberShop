@@ -13,16 +13,16 @@ window.Bridge = (function () {
   function safe(fn) {
     try { return fn(); } catch (_) { return undefined; }
   }
+  // Платформа дописывает параметры к фрагменту приложения ("#/mine?tgWebAppData=…") — ищем при любом разделителе
   function hashParam(name) {
-    const h = location.hash.replace(/^#/, "");
-    for (const part of h.split("&")) {
-      const i = part.indexOf("=");
-      if (i > 0 && part.slice(0, i) === name) {
-        const v = part.slice(i + 1);
-        try { return decodeURIComponent(v); } catch (_) { return v; }
-      }
-    }
-    return "";
+    const m = location.hash.match(new RegExp("(?:^#|[#?&])" + name + "=([^&#]*)"));
+    if (!m) return "";
+    try { return decodeURIComponent(m[1]); } catch (_) { return m[1]; }
+  }
+  /** Путь приложения из фрагмента: "#/mine?tgWebAppData=…" → "mine". */
+  function hashPath() {
+    const p = location.hash.replace(/^#\/?/, "").split(/[?#&]/)[0];
+    return p.indexOf("=") >= 0 ? "" : p;
   }
   const ss = (key) => safe(() => sessionStorage.getItem(key)) || "";
 
@@ -65,7 +65,10 @@ window.Bridge = (function () {
     });
   }
 
-  const ready = (det.platform ? loadSdk(SDK[det.platform]) : Promise.resolve()).then(() => {
+  // Платформа не распознана по URL (нестандартный формат фрагмента) — страховка: грузим SDK Telegram,
+  // он сам разберёт initData. В обычном браузере это просто лишние 100 КБ, ничего не ломает.
+  const sdkUrl = det.platform ? SDK[det.platform] : SDK.telegram;
+  const ready = loadSdk(sdkUrl).then(() => {
     native = pick();
     if (native && native.initData) det.initData = native.initData;
   });
@@ -134,6 +137,7 @@ window.Bridge = (function () {
     get platform() { return det.platform; },
     get initData() { return det.initData; },
     get hasNativeBack() { return hasNativeBack(); },
+    hashPath,
     ready,
     init,
     user,

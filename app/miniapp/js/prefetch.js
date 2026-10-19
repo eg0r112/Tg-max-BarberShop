@@ -6,16 +6,12 @@
   var base = String(cfg.apiBase || "").replace(/\/$/, "");
 
   function safe(fn) { try { return fn(); } catch (_) { return undefined; } }
+  // Telegram/MAX дописывают свои параметры к уже имеющемуся фрагменту ("#/mine?tgWebAppData=…",
+  // "#/mine&tgWebAppData=…", "#/mine#tgWebAppData=…") — ищем имя при любом разделителе.
   function hashParam(name) {
-    var parts = location.hash.replace(/^#/, "").split("&");
-    for (var i = 0; i < parts.length; i++) {
-      var j = parts[i].indexOf("=");
-      if (j > 0 && parts[i].slice(0, j) === name) {
-        var v = parts[i].slice(j + 1);
-        try { return decodeURIComponent(v); } catch (_) { return v; }
-      }
-    }
-    return "";
+    var m = location.hash.match(new RegExp("(?:^#|[#?&])" + name + "=([^&#]*)"));
+    if (!m) return "";
+    try { return decodeURIComponent(m[1]); } catch (_) { return m[1]; }
   }
   var ss = function (k) { return safe(function () { return sessionStorage.getItem(k); }) || ""; };
 

@@ -127,7 +127,7 @@ function writeBootCache(key, data) {
 
 /** Стартовый экран по роли и hash (#/mine, #/sched, #/book). */
 function routeInitial({ fetchLists }) {
-  const h = location.hash.replace(/^#\/?/, "");
+  const h = Bridge.hashPath();
   if (isStaff()) {
     S.route = h === "sched" ? "sched" : "staff";
     if (!S.staff.day) S.staff.day = today();
@@ -1089,6 +1089,7 @@ const actions = {
         Net.token = res.token;
         S.me = res;
         store.set("name", res.full_name || name);
+        writeBootCache(bootCacheKey(), { shop: S.shop, me: S.me, services: S.services, masters: S.masters });
         if (S.book) S.book.name = res.full_name || name;
         Sheets.close(S.profileSheet);
         Bridge.haptic("success");
