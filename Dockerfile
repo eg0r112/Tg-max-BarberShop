@@ -1,6 +1,7 @@
+# Bothost монтирует код в /app — WORKDIR держим отдельно, иначе прокси/маршруты ломаются.
 FROM python:3.13-slim
 
-WORKDIR /app
+WORKDIR /usr/src/app
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     ca-certificates \
@@ -14,6 +15,7 @@ COPY . .
 ENV HOST=0.0.0.0
 ENV PORT=8000
 ENV PYTHONUNBUFFERED=1
+ENV PYTHONPATH=/usr/src/app
 
 EXPOSE 8000
 

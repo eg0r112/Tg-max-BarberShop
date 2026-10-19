@@ -130,10 +130,15 @@ async def health() -> dict:
 
 
 def main() -> None:
+    import os
+
     import uvicorn
 
     settings = get_settings()
-    uvicorn.run("app.main:app", host=settings.host, port=settings.port, reload=False)
+    # Bothost прокидывает PORT из панели — берём его явно
+    host = os.getenv("HOST", settings.host) or "0.0.0.0"
+    port = int(os.getenv("PORT", str(settings.port)))
+    uvicorn.run("app.main:app", host=host, port=port, reload=False)
 
 
 if __name__ == "__main__":
